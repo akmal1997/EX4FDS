@@ -89,7 +89,18 @@ CREATE PACKAGE BODY BANKING_PROCS AS
     BEGIN
 
       -- TODO put your PL/SQL Code here to withdraw money from the local bank
-      SELECT CUSTOMERNO FROM ACCOUNT
+      SELECT CUSTOMERNO,IBAN,BALANCE INTO P_VALUE, P_IBAN FROM ACCOUNT WHERE IBAN=P_IBAN;
+      SELECT BIC INTO P_BIC FROM BANK_CONFIG WHERE BIC=P_BIC;
+      if(PVALUE > BALANCE)
+      dbms_output.put_line('Not sufficient amount of money in this account')
+      
+      UPDATE ACCOUNT SET BALANCE=(BALANCE-P_VALUE);
+      END if;
+      
+      
+      
+      
+      
       
       dbms_output.put_line('not ready yet :-(');
 
