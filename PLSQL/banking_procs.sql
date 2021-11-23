@@ -94,7 +94,15 @@ CREATE PACKAGE BODY BANKING_PROCS AS
       if(PVALUE > BALANCE)
       dbms_output.put_line('Not sufficient amount of money in this account')
       
-      UPDATE ACCOUNT SET BALANCE=(BALANCE-P_VALUE);
+      UPDATE ACCOUNT 
+      SET BALANCE=(BALANCE-P_VALUE) WHERE P_IBAN=IBAN
+      else ((p_bic != BIC)  AND (p_iban != IBAN ))
+       BEGIN
+      
+         RAISERROR(unknown_account AND not_local_bic;
+         dbms_output.put_line('not ready yet :-(');
+        
+       END
       END if;
       
       
@@ -102,7 +110,7 @@ CREATE PACKAGE BODY BANKING_PROCS AS
       
       
       
-      dbms_output.put_line('not ready yet :-(');
+      
 
 
     END withdraw;
