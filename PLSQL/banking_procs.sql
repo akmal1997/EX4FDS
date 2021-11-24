@@ -91,7 +91,7 @@ CREATE PACKAGE BODY BANKING_PROCS AS
       -- TODO put your PL/SQL Code here to withdraw money from the local bank
       SELECT CUSTOMERNO,IBAN,BALANCE INTO P_VALUE, P_IBAN FROM ACCOUNT WHERE IBAN=P_IBAN;
       SELECT BIC INTO P_BIC FROM BANK_CONFIG WHERE BIC=P_BIC;
-      if(PVALUE > BALANCE)
+      if(P_VALUE > BALANCE)
       dbms_output.put_line('Not sufficient amount of money in this account')
       
       UPDATE ACCOUNT 
@@ -123,9 +123,16 @@ CREATE PACKAGE BODY BANKING_PROCS AS
     BEGIN
 
       -- TODO put your PL/SQL Code here to deposit money on the local bank
-        INSERT INTO p_value VALUES;
+      SELECT IBAN, BANLANCCE INTO P_VALUE   FROM ACCOUNT WHERE IBAN= p_iban;
+      SELECT BIC INTO P_BIC FROM BANK_CONFIG, WHERE BIC=p_bic;
+      INSERT INTO p_value VALUES;
         ('p_iban','p_bic')
+      if ((BIC != p_bic) AND (IBAN != P_IBAN))
       dbms_output.put_line('not ready yet :-(');
+      else 
+      UPDATE ACCOUNT
+      SET BALANCE = (BALANCE + P_VALUE) WHERE P_IBAN=IBAN;
+      END if;
 
     END deposit;
 
