@@ -92,6 +92,7 @@ CREATE PACKAGE BODY BANKING_PROCS AS
       SELECT CUSTOMERNO,IBAN,BALANCE INTO P_VALUE, P_IBAN FROM ACCOUNT WHERE IBAN=P_IBAN;
       SELECT BIC INTO P_BIC FROM BANK_CONFIG WHERE BIC=P_BIC;
       if(P_VALUE > BALANCE)
+     
       dbms_output.put_line('Not sufficient amount of money in this account')
       
       UPDATE ACCOUNT 
@@ -99,7 +100,7 @@ CREATE PACKAGE BODY BANKING_PROCS AS
       else ((p_bic != BIC)  AND (p_iban != IBAN ))
        BEGIN
       
-         RAISERROR(unknown_account AND not_local_bic;
+         RAISE(unknown_account AND not_local_bic;
          dbms_output.put_line('not ready yet :-(');
         
        END
@@ -123,7 +124,7 @@ CREATE PACKAGE BODY BANKING_PROCS AS
     BEGIN
 
       -- TODO put your PL/SQL Code here to deposit money on the local bank
-      SELECT IBAN, BANLANCCE INTO P_VALUE   FROM ACCOUNT WHERE IBAN= p_iban;
+      SELECT IBAN, BANLANCE INTO P_VALUE   FROM ACCOUNT WHERE IBAN= p_iban;
       SELECT BIC INTO P_BIC FROM BANK_CONFIG, WHERE BIC=p_bic;
       INSERT INTO p_value VALUES;
         ('p_iban','p_bic')
@@ -150,9 +151,20 @@ CREATE PACKAGE BODY BANKING_PROCS AS
       -- TODO put your PL/SQL Code here to transfer money from the local bank to an remote bank.
       -- Attention: use the previously defined deposit and withdraw PL/SQL procedures again here.
       -- You can also use PL/SQL procedures via the database link at the remote bank.
-      SELECT 
+      
+      SELECT IBAN,BALANCE INTO TRANSFER FROM ACCOUNT
+      SELECT BIC INTO TRANSFER FROM BANK_CONFIG 
+      if((from_iban = IBAN) and (from_bic=bic)
+      UPDATE account
+      SET BALANCE = BALANCE-P_VALUE
+      ELSE IF ((to_iban=IBAN) and  (to_bic=bic))
+      UPDATE account 
+      SET BALANCE = BALANCE+P_VALUE
+      ELSE IF (to_bic=from_bic)
+      dbms_output.put_line('Not possible to do a transaction to the same account :-(');
+      ELSE
       dbms_output.put_line('not ready yet :-(');
-
+     END if;
     END transfer;
 
 END BANKING_PROCS;
