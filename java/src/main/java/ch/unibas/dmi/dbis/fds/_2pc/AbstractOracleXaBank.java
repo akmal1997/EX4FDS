@@ -107,6 +107,8 @@ public abstract class AbstractOracleXaBank {
 
     public Xid startTransaction() throws XAException {
         final Xid xid = this.getXid();
+        //
+        xaResource.start(xid, XAResource.TMNOFLAGS);
 
         // TODO: your turn ;-)
         throw new UnsupportedOperationException( "Implement me :-)" );
@@ -115,13 +117,15 @@ public abstract class AbstractOracleXaBank {
 
     public Xid startTransaction( final Xid globalTransactionId ) throws XAException {
         final Xid xid = this.getXid( globalTransactionId );
-
+        //
+        xaResource.start(globalTransactionId,XAResource.TMNOFLAGS);
         // TODO: your turn ;-)
         throw new UnsupportedOperationException( "Implement me :-)" );
     }
 
 
     public void endTransaction( final Xid transactionId, final boolean rollback ) throws XAException {
+        xaResource.end(transactionId,XAResource.TMSUCCESS);
         // TODO: your turn ;-)
         throw new UnsupportedOperationException( "Implement me :-)" );
     }
