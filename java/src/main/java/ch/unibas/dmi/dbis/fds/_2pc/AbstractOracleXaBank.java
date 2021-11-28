@@ -108,8 +108,8 @@ public abstract class AbstractOracleXaBank {
     public int startTransaction() throws XAException, SQLException {
         final Xid xid = this.getXid();
         //
-        XAConnection pc= this.getXaConnection();
-        Connection conex= pc.getConnection();
+        XAConnection bank_x= this.getXaConnection();
+        Connection conex= bank_x.getConnection();
         XAResource resource= this.getXaResource();
         resource.start(xid, XAResource.TMNOFLAGS);
 
@@ -121,8 +121,8 @@ public abstract class AbstractOracleXaBank {
     public Xid startTransaction( final Xid globalTransactionId ) throws XAException, SQLException {
         final Xid xid = this.getXid( globalTransactionId );
         //
-        XAConnection pc2= this.getXaConnection();
-        Connection conex2= pc2.getConnection();
+        XAConnection bank_y= this.getXaConnection();
+        Connection conex2= bank_y.getConnection();
         XAResource resource2= this.getXaResource();
         resource2.start(globalTransactionId,XAResource.TMNOFLAGS);
         // TODO: your turn ;-)
