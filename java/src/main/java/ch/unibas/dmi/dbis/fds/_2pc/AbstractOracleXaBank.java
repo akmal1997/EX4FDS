@@ -108,10 +108,30 @@ public abstract class AbstractOracleXaBank {
     public int startTransaction() throws XAException, SQLException {
         final Xid xid = this.getXid();
         //
-        XAConnection bank_x= this.getXaConnection();
-        Connection conex= bank_x.getConnection();
-        XAResource resource= this.getXaResource();
-        resource.start(xid, XAResource.TMNOFLAGS);
+        OracleXADataSource p5= new OracleXADataSource();
+        p5.setURL("jdbc:oracle:thin:@dmi-p5.dmi.unibas.ch:1521:xe");
+        p5.setUser("fdis_25");
+        p5.setPassword("MrrBP7r");
+        //p6
+        OracleXADataSource p6= new OracleXADataSource();
+        p6.setURL("jdbc:oracle:thin:@dmi-p6.dmi.unibas.ch:1521:xe");
+        p6.setUser("fdis_25");
+        p6.setPassword("MrrBP7r");
+
+        //Get connections
+        XAConnection pc=p5.getXAConnection();
+        XAConnection pc2=p5.getXAConnection();
+        Connection conex= pc.getConnection();
+        Connection conex2= pc2.getConnection();
+        XAResource oxar= pc.getXAResource();
+        XAResource oxar2= pc2.getXAResource();
+        oxar.start(xid, XAResource.TMNOFLAGS);
+        oxar2.start(xid, XAResource.TMNOFLAGS);
+
+        //XAConnection bank_x= this.getXaConnection();
+        //Connection conex= bank_x.getConnection();
+        //XAResource resource= this.getXaResource();
+        //resource.start(xid, XAResource.TMNOFLAGS);
 
         // TODO: your turn ;-)
         throw new UnsupportedOperationException( "Implement me :-)" );
@@ -121,10 +141,29 @@ public abstract class AbstractOracleXaBank {
     public Xid startTransaction( final Xid globalTransactionId ) throws XAException, SQLException {
         final Xid xid = this.getXid( globalTransactionId );
         //
-        XAConnection bank_y= this.getXaConnection();
-        Connection conex2= bank_y.getConnection();
-        XAResource resource2= this.getXaResource();
-        resource2.start(globalTransactionId,XAResource.TMNOFLAGS);
+        OracleXADataSource p5= new OracleXADataSource();
+        p5.setURL("jdbc:oracle:thin:@dmi-p5.dmi.unibas.ch:1521:xe");
+        p5.setUser("fdis_25");
+        p5.setPassword("MrrBP7r");
+        //p6
+        OracleXADataSource p6= new OracleXADataSource();
+        p6.setURL("jdbc:oracle:thin:@dmi-p6.dmi.unibas.ch:1521:xe");
+        p6.setUser("fdis_25");
+        p6.setPassword("MrrBP7r");
+
+        //Get connections
+        XAConnection pc=p5.getXAConnection();
+        XAConnection pc2=p5.getXAConnection();
+        Connection conex= pc.getConnection();
+        Connection conex2= pc2.getConnection();
+        XAResource oxar= pc.getXAResource();
+        XAResource oxar2= pc2.getXAResource();
+        oxar.start(globalTransactionId, XAResource.TMNOFLAGS);
+        oxar2.start(globalTransactionId, XAResource.TMNOFLAGS);
+        //XAConnection bank_y= this.getXaConnection();
+        //Connection conex2= bank_y.getConnection();
+        //XAResource resource2= this.getXaResource();
+        //resource2.start(globalTransactionId,XAResource.TMNOFLAGS);
         // TODO: your turn ;-)
         throw new UnsupportedOperationException( "Implement me :-)" );
     }
@@ -132,20 +171,45 @@ public abstract class AbstractOracleXaBank {
 
     public void endTransaction( final Xid transactionId, final boolean rollback ) throws XAException, SQLException {
         //
+        startTransaction(transactionId);
+        oxar.end(transactionId,XAResource.TMSUCCESS);
+        oxar2.end(transactionId,XAResource.TMSUCCESS);
+        int prep1= oxar.prepare(transactionId);
+        int prep2= oxar2.prepare(transactionId);
+        System.out.println("Return value of prepare  is"+ prep1);
+        System.out.println("Return value of prepare 2  is"+ prep2);
+        boolean do_commit = true;
+        if (!((prep1 == XAResource.XA_OK)) || (prep1== XAResource.XA_RDONLY)))
+             do_commit=false;
+        if (!((prep2 == XAResource.XA_OK)) || (prep2== XAResource.XA_RDONLY)))
+        do_commit=false;
+        System.out.println("do commit is"+ do_commit);
+          System.out.println("Is oxar same as oxar2?"+ oxar.isSameRM(oxar2));
 
-        Integer import_1= startTransaction();
-        Xid import_2= startTransaction();
-        xaResource.end(transactionId,XAResource.TMSUCCESS);
+        if (prep1 == XAResource.XA_OK)
+            if (do_commit)
+                oxar.commit (transactionId, false);
+            else
+                oxar.rollback (transactionId);
+
+        if (prep2p2 == XAResource.XA_OK)
+            if (do_commit)
+                oxar2.commit (transactionId, false);
+            else
+                oxar2.rollback (transactionId);
+
         //close connections
         conex.close();
         conex = null;
         conex2.close();
-        conex2= null;
+        conex2 = null;
+
 
         pc.close();
         pc = null;
         pc2.close();
         pc2 = null;
+
 
 
         // TODO: your turn ;-)

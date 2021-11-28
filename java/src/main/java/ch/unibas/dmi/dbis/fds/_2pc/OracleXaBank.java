@@ -1,6 +1,9 @@
 package ch.unibas.dmi.dbis.fds._2pc;
 
 
+import oracle.jdbc.OracleDriver;
+
+import javax.sql.XAConnection;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
@@ -28,14 +31,13 @@ public class OracleXaBank extends AbstractOracleXaBank {
         String url = "jdbc:oracle:LinkToBank:p5.dmi.unibas.ch:1521:xe";
         String user = "fdis_25";
         String password = "MrrBP7r";
-        Scanner k = new Scanner(System.in);
         String sql = "SELECT BALANCE FROM Account"+
                 "WHERE IBAN=iban";
-        Connection conn = null;
+        XAConnection conn = null;
         try {
             DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
 
-            conn = DriverManager.getConnection(url, user, password);
+            conn = (XAConnection) DriverManager.getConnection(url, user, password);
 
             Statement state = conn.createStatement();
 
@@ -68,13 +70,13 @@ public class OracleXaBank extends AbstractOracleXaBank {
         String url = "jdbc:oracle:LinkToBank:p5.dmi.unibas.ch:1521:xe";
         String user = "fdis_25";
         String password = "MrrBP7r";
-        Connection conn = null;
+
         try {
-            DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
+            DriverManager.registerDriver(new OracleDriver());
 
-            conn = DriverManager.getConnection(url, user, password);
+            XAConnection conn = (XAConnection) DriverManager.getConnection(url, user, password);
 
-            Statement state = conn.prepareCall("{call transfer(?,?,?,?,?)}");
+            CallableStatement state = conn.prepareCall("{call transfer(?,?,?,?,?)}");
             state.setFloat(1,value);
             state.setString(2,ibanFrom);
             state.setString(3,AbstractOracleXaBank.BIC);
