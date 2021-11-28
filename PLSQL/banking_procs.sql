@@ -158,12 +158,12 @@ CREATE PACKAGE BODY BANKING_PROCS AS
       UPDATE account
       ELSIF from_bic = bic THEN
       UPDATE account
-      SET BALANCE = BALANCE-P_VALUE
+      SET withdraw(p_value,from_iban,from_bic)
 
       ELSIF to_iban=IBAN THEN
       UPDATE account 
       ELSIF to_bic=bic THEN
-      SET BALANCE = BALANCE+P_VALUE
+      SET deposit(p_value,to_iban,to_bic)
       ELSIF to_bic=from_bic
       dbms_output.put_line('Not possible to do a transaction to the same account :-(');
       ELSE
