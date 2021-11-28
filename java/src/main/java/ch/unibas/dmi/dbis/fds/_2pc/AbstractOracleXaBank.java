@@ -105,27 +105,49 @@ public abstract class AbstractOracleXaBank {
     }
 
 
-    public Xid startTransaction() throws XAException {
+    public int startTransaction() throws XAException, SQLException {
         final Xid xid = this.getXid();
         //
-        xaResource.start(xid, XAResource.TMNOFLAGS);
+        XAConnection pc= this.getXaConnection();
+        Connection conex= pc.getConnection();
+        XAResource resource= this.getXaResource();
+        resource.start(xid, XAResource.TMNOFLAGS);
 
         // TODO: your turn ;-)
         throw new UnsupportedOperationException( "Implement me :-)" );
     }
 
 
-    public Xid startTransaction( final Xid globalTransactionId ) throws XAException {
+    public Xid startTransaction( final Xid globalTransactionId ) throws XAException, SQLException {
         final Xid xid = this.getXid( globalTransactionId );
         //
-        xaResource.start(globalTransactionId,XAResource.TMNOFLAGS);
+        XAConnection pc2= this.getXaConnection();
+        Connection conex2= pc2.getConnection();
+        XAResource resource2= this.getXaResource();
+        resource2.start(globalTransactionId,XAResource.TMNOFLAGS);
         // TODO: your turn ;-)
         throw new UnsupportedOperationException( "Implement me :-)" );
     }
 
 
-    public void endTransaction( final Xid transactionId, final boolean rollback ) throws XAException {
+    public void endTransaction( final Xid transactionId, final boolean rollback ) throws XAException, SQLException {
+        //
+
+        Integer import_1= startTransaction();
+        Xid import_2= startTransaction();
         xaResource.end(transactionId,XAResource.TMSUCCESS);
+        //close connections
+        conex.close();
+        conex = null;
+        conex2.close();
+        conex2= null;
+
+        pc.close();
+        pc = null;
+        pc2.close();
+        pc2 = null;
+
+
         // TODO: your turn ;-)
         throw new UnsupportedOperationException( "Implement me :-)" );
     }

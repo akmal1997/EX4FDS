@@ -24,34 +24,34 @@ public class OracleXaBank extends AbstractOracleXaBank {
     public float getBalance( final String iban ) throws SQLException {
         float balance = Float.NaN;
         //
+
         balance = this.getBalance(iban);
         return balance;
 
 
 
         // TODO: your turn ;-)
-        throw new UnsupportedOperationException( "Implement me :-)" );
+        //throw new UnsupportedOperationException( "Implement me :-)" );
     }
 
 
     @Override
     public void transfer( final AbstractOracleXaBank TO_BANK, final String ibanFrom, final String ibanTo, final float value ) throws XAException {
         //
-        Float balance1= ibanFrom.getBalance();
-        Float balance2= ibanTo.getBalance();
-        if (ibanFrom.equals(ibanTo)){
-            System.println.out("Not possible to transfer to the same account" );
+        float balance1= ibanFrom.getBalance();
+        float balance2= ibanTo.getBalance();
+        if (ibanFrom.equals(ibanTo)) {
+            System.out.println("Not possible to transfer to the same account");
+        }else if(value > ibanFrom.getBalance()){
+            System.out.println("Quantity not allowed");
+
         }else{
-            TO_BANK.startTransaction();
             balance1= balance1-value;
             balance2=balance2+value;
-            TO_BANK.endTransaction();
-
-
         }
 
 
         // TODO: your turn ;-)
-        throw new UnsupportedOperationException( "Implement me :-)" );
+        //throw new UnsupportedOperationException( "Implement me :-)" );
     }
 }
