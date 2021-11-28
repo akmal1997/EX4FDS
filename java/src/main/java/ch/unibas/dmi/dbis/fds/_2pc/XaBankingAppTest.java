@@ -29,8 +29,8 @@ public class XaBankingAppTest {
     private static final Logger LOG = Logger.getLogger( XaBankingAppTest.class.getName() );
 
     /** TODO 1 of 2: Change login credentials to the ones you received via mail. */
-    private static final String DBMS_USERNAME = "test";
-    private static final String DBMS_PASSWORD = "test";
+    private static final String DBMS_USERNAME = "fdis_25";//myvalues
+    private static final String DBMS_PASSWORD = "MrrBP7r";//myvalues
 
 
     static {

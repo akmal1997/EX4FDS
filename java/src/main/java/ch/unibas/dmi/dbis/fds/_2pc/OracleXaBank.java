@@ -4,7 +4,8 @@ package ch.unibas.dmi.dbis.fds._2pc;
 import javax.sql.XADataSource;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Scanner;
 
 
 /**
@@ -24,9 +25,37 @@ public class OracleXaBank extends AbstractOracleXaBank {
     public float getBalance( final String iban ) throws SQLException {
         float balance = Float.NaN;
         //
+        String url = "jdbc:oracle:LinkToBank:p5.dmi.unibas.ch:1521:xe";
+        String user = "fdis_25";
+        String password = "MrrBP7r";
+        Scanner k = new Scanner(System.in);
+        String sql = "SELECT BALANCE FROM Account WHERE IBAN=iban";
+        Connection conn = null;
+        try {
+            DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
 
-        balance = this.getBalance(iban);
-        return balance;
+            conn = DriverManager.getConnection(url, user, password);
+
+            Statement state = conn.createStatement();
+
+            ResultSet n = state.executeQuery(sql);
+            while (n.next()){
+                System.out.println("BALANCE:"+ n.getInt("balance"));
+
+
+            }
+            conn.close();
+
+
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+
+
+
+
+
+
 
 
 
