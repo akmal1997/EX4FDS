@@ -16,20 +16,21 @@ import java.util.Scanner;
 public class OracleXaBank extends AbstractOracleXaBank {
 
 
-    public OracleXaBank( final String BIC, final String jdbcConnectionString, final String dbmsUsername, final String dbmsPassword ) throws SQLException {
-        super( BIC, jdbcConnectionString, dbmsUsername, dbmsPassword );
+    public OracleXaBank(final String BIC, final String jdbcConnectionString, final String dbmsUsername, final String dbmsPassword) throws SQLException {
+        super(BIC, jdbcConnectionString, dbmsUsername, dbmsPassword);
     }
 
 
     @Override
-    public float getBalance( final String iban ) throws SQLException {
+    public float getBalance(final String iban) throws SQLException {
         float balance = Float.NaN;
         //
         String url = "jdbc:oracle:LinkToBank:p5.dmi.unibas.ch:1521:xe";
         String user = "fdis_25";
         String password = "MrrBP7r";
         Scanner k = new Scanner(System.in);
-        String sql = "SELECT BALANCE FROM Account WHERE IBAN=iban";
+        String sql = "SELECT BALANCE FROM Account"+
+                "WHERE IBAN=iban";
         Connection conn = null;
         try {
             DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
@@ -39,24 +40,17 @@ public class OracleXaBank extends AbstractOracleXaBank {
             Statement state = conn.createStatement();
 
             ResultSet n = state.executeQuery(sql);
-            while (n.next()){
-                System.out.println("BALANCE:"+ n.getInt("balance"));
+            while (n.next()) {
+                System.out.println("BALANCE:" + n.getInt("balance"));
 
 
             }
             conn.close();
 
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-
-
-
-
-
 
 
         // TODO: your turn ;-)
@@ -64,20 +58,39 @@ public class OracleXaBank extends AbstractOracleXaBank {
     }
 
 
+
+
     @Override
     public void transfer( final AbstractOracleXaBank TO_BANK, final String ibanFrom, final String ibanTo, final float value ) throws XAException {
         //
         float balance1= ibanFrom.getBalance();
         float balance2= ibanTo.getBalance();
-        if (ibanFrom.equals(ibanTo)) {
-            System.out.println("Not possible to transfer to the same account");
-        }else if(value > ibanFrom.getBalance()){
-            System.out.println("Quantity not allowed");
+        String url = "jdbc:oracle:LinkToBank:p5.dmi.unibas.ch:1521:xe";
+        String user = "fdis_25";
+        String password = "MrrBP7r";
+        Connection conn = null;
+        try {
+            DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
 
-        }else{
-            balance1= balance1-value;
-            balance2=balance2+value;
+            conn = DriverManager.getConnection(url, user, password);
+
+            Statement state = conn.prepareCall("{call transfer(?,?,?,?,?)}");
+            state.setFloat(1,value);
+            state.setString(2,ibanFrom);
+            state.setString(3,AbstractOracleXaBank.BIC);
+            state.setString(4,ibanTo);
+            state.setString(5,AbstractOracleXaBank.BIC);
+
+            System.out.println("Tranfer done successfully");
+
+
+            conn.close();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
 
 
         // TODO: your turn ;-)
