@@ -154,13 +154,17 @@ CREATE PACKAGE BODY BANKING_PROCS AS
       
       SELECT IBAN,BALANCE INTO TRANSFER FROM ACCOUNT
       SELECT BIC INTO TRANSFER FROM BANK_CONFIG 
-      if((from_iban = IBAN) and (from_bic=bic)
+      IF from_iban = IBAN THEN
+      UPDATE account
+      ELSIF from_bic = bic THEN
       UPDATE account
       SET BALANCE = BALANCE-P_VALUE
-      ELSE IF ((to_iban=IBAN) and  (to_bic=bic))
+
+      ELSIF to_iban=IBAN THEN
       UPDATE account 
+      ELSIF to_bic=bic THEN
       SET BALANCE = BALANCE+P_VALUE
-      ELSE IF (to_bic=from_bic)
+      ELSIF to_bic=from_bic
       dbms_output.put_line('Not possible to do a transaction to the same account :-(');
       ELSE
       dbms_output.put_line('not ready yet :-(');
